@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "mst_products")
@@ -42,7 +43,9 @@ public class Product implements Serializable {
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "supplier_id")
     )
-    private Set<Supplier> supplier;
+
+    @JsonManagedReference
+    private Set<Supplier> suppliers;
     
     public Product() {}
 
@@ -100,6 +103,4 @@ public class Product implements Serializable {
     public void setSupplier(Set<Supplier> supplier) {
         this.supplier = supplier;
     }
-
-    
 }

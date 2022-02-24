@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import com.domain.models.entities.Product;
+import com.domain.models.entities.Supplier;
 import com.domain.models.repositories.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class ProductService {
     @Autowired
     private ProductRepo productRepo;
 
-    public Product create(Product product) {
+    public Product save(Product product) {
         return productRepo.save(product);
     }
 
@@ -37,5 +38,14 @@ public class ProductService {
 
     public void removeOne(Long id) {
         productRepo.deleteById(id);
+    }
+
+    public void addSupplier(Supplier supplier, Long productId) {
+        Product product = findOne(productId);
+        if(product == null) {
+            throw new RuntimeException("Product with ID:" + productId + " not found");
+        }
+        product.getSupplier().add(supplier);
+        save(product);
     }
 }

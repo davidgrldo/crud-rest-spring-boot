@@ -1,10 +1,11 @@
 package com.domain.controllers;
 
 import javax.validation.Valid;
+import com.domain.dto.CategoryData;
 import com.domain.dto.ResponseData;
-import com.domain.models.entities.Product;
-import com.domain.models.entities.Supplier;
-import com.domain.services.ProductService;
+import com.domain.models.entities.Category;
+import com.domain.services.CategoryService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/products")
-public class ProductController {
+@RequestMapping("/api/categories")
+public class CategoryController {
+    @Autowired
+    private CategoryService categoryService;
     
-    @Autowired // controller -> services -> repository
-    private ProductService productService;
-    
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PostMapping
-    public ResponseEntity<ResponseData<Product>> save(@Valid @RequestBody Product product, Errors errors) {
-        ResponseData<Product> responseData = new ResponseData<>();
+    public ResponseEntity<ResponseData<Category>> create(@Valid @RequestBody CategoryData categoryData, Errors errors) {
+        ResponseData<Category> responseData = new ResponseData<>();
 
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
@@ -39,26 +42,26 @@ public class ProductController {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
+        Category category = modelMapper.map(categoryData, Category.class);
         responseData.setStatus(true);
-        responseData.getMessage().add("Product saved");
-        responseData.setPayload(productService.save(product));
+        responseData.setPayload(categoryService.save(category));
 
         return ResponseEntity.ok(responseData);
     }
 
     @GetMapping
-    public Iterable<Product> findAll() {
-        return productService.findAll();
+    public Iterable<Category> findAll() {
+        return categoryService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Product findOne(@PathVariable("id") Long id) {
-        return productService.findOne(id);
+    public Category findOne(@PathVariable("id") Long id) {
+        return categoryService.findOne(id);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseData<Product>> update(@Valid @RequestBody Product product, Errors errors) {
-        ResponseData<Product> responseData = new ResponseData<>();
+    public ResponseEntity<ResponseData<Category>> update(@Valid @RequestBody CategoryData categoryData, Errors errors) {
+        ResponseData<Category> responseData = new ResponseData<>();
 
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
@@ -66,23 +69,18 @@ public class ProductController {
             }
             responseData.setStatus(false);
             responseData.setPayload(null);
-            
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
+        Category category = modelMapper.map(categoryData, Category.class);
         responseData.setStatus(true);
-        responseData.getMessage().add("Product updated.");
-        responseData.setPayload(productService.save(product));
+        responseData.setPayload(categoryService.save(category));
 
         return ResponseEntity.ok(responseData);
     }
 
     @DeleteMapping("/{id}")
     public void removeOne(@PathVariable("id") Long id) {
-        productService.removeOne(id);
-    }
-
-    @PostMapping("/{id}")
-    public void addSupplier(@RequestBody Supplier supplier, @PathVariable("id") Long productId) {
-        productService.addSupplier(supplier, productId);
+        categoryService.removeOne(id);
     }
 }
