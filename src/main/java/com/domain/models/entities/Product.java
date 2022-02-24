@@ -46,7 +46,7 @@ public class Product implements Serializable {
 
     @JsonManagedReference
     private Set<Supplier> suppliers;
-    
+
     public Product() {}
 
     public Product(Long id, String name, String description, double price) {
@@ -96,11 +96,11 @@ public class Product implements Serializable {
         this.category = category;
     }
 
-    public Set<Supplier> getSupplier() {
-        return supplier;
+    public Set<Supplier> getSuppliers() {
+        return suppliers;
     }
 
-    public void setSupplier(Set<Supplier> supplier) {
-        this.supplier = supplier;
+    public void setSuppliers(Set<Supplier> suppliers) {
+        this.suppliers = suppliers;
     }
 }
